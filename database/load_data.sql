@@ -1,0 +1,1 @@
+-- TODO: Instead of importing CSVs manually with pgAdmin, this file will contain the COPY commands to load every dataset automatically
