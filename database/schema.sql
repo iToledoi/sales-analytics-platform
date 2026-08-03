@@ -76,7 +76,9 @@ CREATE TABLE order_items (
     product_id TEXT NOT NULL,
     seller_id TEXT NOT NULL,
     shipping_limit_date TIMESTAMP,
-    created_at TIMESTAMP,
+    shipping_limit_time TIME,
+    price NUMERIC(10,2),
+    freight_value NUMERIC(10,2),
 
     PRIMARY KEY (order_id, order_item_id)
 );
