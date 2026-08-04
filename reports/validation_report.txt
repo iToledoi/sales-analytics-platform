@@ -1,0 +1,218 @@
+======================================
+          VALIDATION REPORT           
+======================================
+
+======================================
+              Customers               
+======================================
+
+
+Rows
+
+99,441
+
+Duplicates
+
+0
+
+Missing Values
+
+None
+
+======================================
+             Geolocation              
+======================================
+
+
+Rows
+
+738,332
+
+Duplicates
+
+0
+
+Missing Values
+
+None
+
+======================================
+             Order Items              
+======================================
+
+
+Rows
+
+112,650
+
+Duplicates
+
+0
+
+Missing Values
+
+None
+
+======================================
+            Order Payments            
+======================================
+
+
+Rows
+
+103,886
+
+Duplicates
+
+0
+
+Missing Values
+
+None
+
+======================================
+            Order Reviews             
+======================================
+
+
+Rows
+
+99,224
+
+Duplicates
+
+814
+
+Missing Values
+
+review_comment_title............ 87,660
+review_comment_message.......... 58,280
+
+Validation Warnings
+
+- 145940 missing values remain
+- 814 duplicate values found in review_id
+
+======================================
+                Orders                
+======================================
+
+
+Rows
+
+99,441
+
+Duplicates
+
+0
+
+Missing Values
+
+order_delivered_customer_date... 2,965
+order_delivered_carrier_date.... 1,783
+order_approved_at............... 160
+
+Validation Warnings
+
+- 4908 missing values remain
+
+======================================
+               Products               
+======================================
+
+
+Rows
+
+32,951
+
+Duplicates
+
+0
+
+Missing Values
+
+product_category_name........... 610
+product_description_lenght...... 610
+product_name_lenght............. 610
+product_photos_qty.............. 610
+product_height_cm............... 2
+product_length_cm............... 2
+product_weight_g................ 2
+product_width_cm................ 2
+
+Validation Warnings
+
+- 2448 missing values remain
+
+======================================
+               Sellers                
+======================================
+
+
+Rows
+
+3,095
+
+Duplicates
+
+0
+
+Missing Values
+
+None
+
+======================================
+  Product Category Name Translation   
+======================================
+
+
+Rows
+
+71
+
+Duplicates
+
+0
+
+Missing Values
+
+None
+
+
+ETL SUMMARY
+
+======================================
+
+Files Processed
+
+9
+
+Rows Processed
+
+1,289,091
+
+Rows Removed
+
+261,831
+
+Currency Symbols Removed
+
+0
+
+Dates Converted
+
+704,114
+
+Duplicates Removed
+
+261,831
+
+Validation Warnings
+
+4
+
+Output Folder
+
+data/cleaned/
+
+======================================
