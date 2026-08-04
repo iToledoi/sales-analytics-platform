@@ -40,13 +40,13 @@ CREATE TABLE product_category_name_translation (
 CREATE TABLE products (
     product_id TEXT PRIMARY KEY,
     product_category_name TEXT,
-    product_name_length INTEGER,
-    product_description_length INTEGER,
-    product_photos_qty INTEGER,
-    product_weight_g INTEGER,
-    product_length_cm INTEGER,
-    product_height_cm INTEGER,
-    product_width_cm INTEGER
+    product_name_length FLOAT,
+    product_description_length FLOAT,
+    product_photos_qty FLOAT,
+    product_weight_g FLOAT,
+    product_length_cm FLOAT,
+    product_height_cm FLOAT,
+    product_width_cm FLOAT
 );
 
 -- Sellers
@@ -95,11 +95,13 @@ CREATE TABLE order_payments (
 
 -- Order Reviews
 CREATE TABLE order_reviews (
-    review_id TEXT PRIMARY KEY,
+    review_id TEXT NOT NULL,
     order_id TEXT NOT NULL,
     review_score INTEGER,
     review_comment_title TEXT,
     review_comment_message TEXT,
     review_creation_date TIMESTAMP,
-    review_answer_timestamp TIMESTAMP
+    review_answer_timestamp TIMESTAMP,
+
+    PRIMARY KEY (review_id, order_id)
 );
