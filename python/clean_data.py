@@ -101,9 +101,56 @@ def _format_validation_warnings(issues: list[str]) -> list[str]:
 
 	return [f"- {issue}" for issue in issues]
 
+def _build_report(processed_files: list[dict[str, object]], summary: dict[str, int], output_folder: str) -> str:
+	lines: list[str] = []
+	separator = "=" * 38
+	lines.extend(_center_title("VALIDATION REPORT", len(separator)))
 
+	for file_report in processed_files:
+		lines.extend(_center_title(str(file_report["display_name"]), len(separator)))
+		lines.append("")
+		lines.append("Rows")
+		lines.append("")
+		lines.append(_pretty_number(int(file_report["clean_rows"])))
+		lines.append("")
+		lines.append("Duplicates")
+		lines.append("")
+		lines.append(_pretty_number(int(file_report["validation"]["duplicates"])))
+		lines.append("")
+		lines.append("Missing Values")
+		lines.append("")
+		lines.extend(_format_missing_values(file_report["validation"]["missing_by_column"]))
+		lines.append("")
+		if file_report["validation"]["issues"]:
+			lines.append("Validation Warnings")
+			lines.append("")
+			lines.extend(_format_validation_warnings(file_report["validation"]["issues"]))
+			lines.append("")
 
-
+	lines.append("")
+	lines.append("ETL SUMMARY")
+	lines.append("")
+	lines.append(separator)
+	lines.append("")
+	lines.append(f"Files Processed\n\n{_pretty_number(summary['files_processed'])}")
+	lines.append("")
+	lines.append(f"Rows Processed\n\n{_pretty_number(summary['rows_processed'])}")
+	lines.append("")
+	lines.append(f"Rows Removed\n\n{_pretty_number(summary['rows_removed'])}")
+	lines.append("")
+	lines.append(f"Currency Symbols Removed\n\n{_pretty_number(summary['currency_symbols_removed'])}")
+	lines.append("")
+	lines.append(f"Dates Converted\n\n{_pretty_number(summary['dates_converted'])}")
+	lines.append("")
+	lines.append(f"Duplicates Removed\n\n{_pretty_number(summary['duplicates_removed'])}")
+	lines.append("")
+	lines.append(f"Validation Warnings\n\n{_pretty_number(summary['validation_warnings'])}")
+	lines.append("")
+	lines.append(f"Output Folder\n\n{output_folder}")
+	lines.append("")
+	lines.append(separator)
+	lines.append("")
+	return "\n".join(lines)
 
 def main() -> None:
 	raw_dir = Path(RAW_DATA_DIR)
