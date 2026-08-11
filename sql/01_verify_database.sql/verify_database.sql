@@ -82,6 +82,8 @@ FROM products
 GROUP BY product_id
 HAVING COUNT(*) > 1;
 
+
+
 --Sellers
 SELECT seller_id, COUNT(*) AS duplicate_count
 FROM sellers
@@ -204,9 +206,20 @@ FROM order_payments
 WHERE payment_value < 0;
 
 -- Payment installments
+-- Credit card payments should have at least one installment.
 SELECT COUNT(*) AS invalid_installments
 FROM order_payments
-WHERE payment_installments <= 0;
+WHERE payment_type = 'credit_card'
+  AND payment_installments <= 0;
+
+SELECT
+    order_id,
+    payment_sequential,
+    payment_installments,
+    payment_value
+FROM order_payments
+WHERE payment_type = 'credit_card'
+  AND payment_installments <= 0;
 
 -- Product dimensions
 SELECT COUNT(*) AS invalid_product_dimensions
