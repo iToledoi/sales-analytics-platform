@@ -18,7 +18,6 @@ FROM customers;
 -- Count the number of records in the order_items table
 SELECT
     COUNT(*) AS total_order_items,
-    COUNT(DISTINCT customer_id) AS total_customers,
     COUNT(DISTINCT seller_id) AS total_sellers,
     COUNT(DISTINCT product_id) AS total_products,
     COUNT(DISTINCT order_id) AS total_order_items
