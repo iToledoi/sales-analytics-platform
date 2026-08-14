@@ -6,7 +6,7 @@
 SELECT
     COUNT(*) AS total_orders,
     MIN(order_purchase_timestamp) AS first_order_date,
-    MAX(order_purchase_timestamp) AS last_order_date,
+    MAX(order_purchase_timestamp) AS last_order_date
 FROM orders;
 
 -- Compare the number of records in each table
@@ -93,7 +93,7 @@ FROM order_totals;
 -- 7. Customer Overview
 -- ==========================================================
 
-SELECT COUNT(*) AS total_customer records,
+SELECT COUNT(*) AS total_customer_records,
         COUNT(DISTINCT customer_unique_id) AS unique_customers
 FROM customers;
 
@@ -135,7 +135,7 @@ SELECT
 
 FROM order_items oi
 JOIN products p
-    ON oi.products_id = p.product_id
+    ON oi.product_id = p.product_id
 GROUP BY product_category
 ORDER BY items_sold DESC
 LIMIT 20;
@@ -164,15 +164,12 @@ LIMIT 20;
 -- Find out where customers are located at the state level
 SELECT
     c.customer_state,
-    COUNT(DISTINCT c.customer_id) AS total_customers,
-    COUNT(DISTINCT o.order_id) AS total_orders,
-    ROUND(SUM(op.payment_value), 2) AS total_revenue
-
+    COUNT(DISTINCT o.order_id) AS orders
 FROM customers c
 JOIN orders o
     ON c.customer_id = o.customer_id
 GROUP BY c.customer_state
-ORDER BY total_orders DESC;
+ORDER BY orders DESC;
 
 -- ==========================================================
 -- 12. Payment methods Overview
@@ -181,7 +178,7 @@ ORDER BY total_orders DESC;
 SELECT
     payment_type,
     COUNT(*) AS payment_count,
-    ROUND(SUM(payment_value), 2) AS total_revenue
+    ROUND(SUM(payment_value), 2) AS total_revenue,
     ROUND(AVG(payment_value), 2) AS average_payment_value
 FROM order_payments
 GROUP BY payment_type
