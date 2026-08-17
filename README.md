@@ -315,9 +315,50 @@ sales-analytics-platform/
 └── images/
     └── dashboard.png
 ```
+---
 
 ## Key Findings
+(WIP will be updated)
+Current findings include:
 
+- Approximately 97% of orders are marked as delivered.
+- Recorded payment value totals approximately $16.0M.
+- Average order value is approximately $160.99.
+- Approximately 3.12% of unique customers made more than one purchase during the observation period.
+- November 2017 experienced approximately 63% month-over-month growth in order volume compared with October.
+- Credit cards account for the majority of recorded payment value.
+- The dataset contains incomplete periods at the beginning and end of the observation window.
+
+---
+  
 ## Future Analysis
+The next stages of the project will include:
+
+- Advanced SQL sales analysis
+- Customer segmentation
+- Product and category revenue analysis
+- Seller performance analysis
+- Delivery performance analysis
+- Review and satisfaction analysis
+- Excel executive dashboard
+- Business recommendations
+- Final portfolio documentation
+
+---
 
 ## How to Run
+### Requirements
+- PostgreSQL
+- pgAdmin 4
+- Python 3.x
+- pandas
+- Git
+  
+### Database Setup
+1. Create a PostgreSQL database.
+2. Execute database/schema.sql.
+3. Execute database/constraints.sql.
+4. Execute database/indexes.sql.
+5. Run the Python data-cleaning pipeline.
+6. Load the cleaned CSV files using database/load_data.sql.
+7. Execute the SQL analysis scripts in the sql/ directory.
