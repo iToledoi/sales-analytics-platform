@@ -137,3 +137,20 @@ JOIN order_items oi
     ON o.order_id = oi.order_id
 GROUP BY DATE_TRUNC('month', o.order_purchase_timestamp)
 ORDER BY month;
+
+-- ==========================================================
+-- 7. Key Sales Findings
+-- ==========================================================
+
+-- Identify top-selling products, categories, and sellers
+SELECT
+    p.product_id,
+    p.product_name,
+    COUNT(DISTINCT oi.order_id) AS orders,
+    ROUND(SUM(oi.price + oi.freight_value), 2) AS total_revenue
+FROM products p
+JOIN order_items oi
+    ON p.product_id = oi.product_id
+GROUP BY p.product_id, p.product_name
+ORDER BY total_revenue DESC
+LIMIT 10;
