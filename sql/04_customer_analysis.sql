@@ -7,14 +7,25 @@
 -- ==========================================================
 
 -- New customers acquired over time by month
+WITH customer_first_order AS (
+    SELECT
+        c.customer_unique_id,
+        DATE_TRUNC(
+            'month',
+            MIN(o.order_purchase_timestamp)
+        ) AS first_order_month
+    FROM customers c
+    JOIN orders o
+        ON c.customer_id = o.customer_id
+    GROUP BY c.customer_unique_id
+)
+
 SELECT
-    DATE_TRUNC('month', o.order_purchase_timestamp) AS month,
-    COUNT(DISTINCT c.customer_unique_id) AS new_customers
-FROM customers c
-JOIN orders o
-    ON c.customer_id = o.customer_id
-GROUP BY DATE_TRUNC('month', o.order_purchase_timestamp)
-ORDER BY month;
+    first_order_month AS month,
+    COUNT(*) AS new_customers
+FROM customer_first_order
+GROUP BY first_order_month
+ORDER BY first_order_month;
 
 -- Customer growth over time by month
 WITH monthly_customers AS (
@@ -39,13 +50,22 @@ ORDER BY month;
 -- ==========================================================
 
 -- Orders per customer distribution
+WITH customer_orders AS (
+    SELECT
+        c.customer_unique_id,
+        COUNT(DISTINCT o.order_id) AS order_count
+    FROM customers c
+    JOIN orders o
+        ON c.customer_id = o.customer_id
+    GROUP BY c.customer_unique_id
+)
+
 SELECT
-    COUNT(DISTINCT o.order_id) AS order_count,
-    COUNT(DISTINCT c.customer_unique_id) AS customer_count
-FROM customers c
-JOIN orders o
-    ON c.customer_id = o.customer_id
-GROUP BY c.customer_unique_id;
+    order_count,
+    COUNT(*) AS customers
+FROM customer_orders
+GROUP BY order_count
+ORDER BY order_count;
 
 -- One time vs repeat customers
 WITH customer_orders AS (
@@ -81,24 +101,25 @@ FROM customer_orders;
 -- ==========================================================
 
 -- Customer lifetime value (CLV) by month
-WITH customer_lifetime_value AS (
+WITH customer_value AS (
     SELECT
         c.customer_unique_id,
-        DATE_TRUNC('month', o.order_purchase_timestamp) AS month,
-        SUM(oi.price + oi.freight_value) AS total_order_value
+        COUNT(DISTINCT o.order_id) AS total_orders,
+        SUM(oi.price + oi.freight_value) AS lifetime_value
     FROM customers c
     JOIN orders o
         ON c.customer_id = o.customer_id
     JOIN order_items oi
         ON o.order_id = oi.order_id
-    GROUP BY c.customer_unique_id, DATE_TRUNC('month', o.order_purchase_timestamp)
+    GROUP BY c.customer_unique_id
 )
+
 SELECT
-    month,
-    SUM(total_order_value) AS clv
-FROM customer_lifetime_value
-GROUP BY month
-ORDER BY month;
+    customer_unique_id,
+    total_orders,
+    ROUND(lifetime_value::numeric, 2) AS lifetime_value
+FROM customer_value
+ORDER BY lifetime_value DESC;
 
 -- Top customers by spending
 SELECT
@@ -200,16 +221,16 @@ WITH customer_rfm AS (
     JOIN order_items oi
         ON o.order_id = oi.order_id
     GROUP BY c.customer_unique_id
-) 
+)
 
-SELECT 
+SELECT
     customer_unique_id,
     last_order_date,
     order_count,
     total_spent,
     CASE
-        WHEN last_order_date >= NOW() - INTERVAL '30 days' THEN 'Active'
-        WHEN last_order_date >= NOW() - INTERVAL '90 days' THEN 'At Risk'
+        WHEN last_order_date = MAX(o.order_purchase_timestamp) - INTERVAL '30 days' THEN 'Active'
+        WHEN last_order_date >= MAX(o.order_purchase_timestamp) - INTERVAL '90 days' THEN 'At Risk'
         ELSE 'Churned'
     END AS recency_segment,
     CASE
