@@ -100,7 +100,7 @@ FROM customer_orders;
 -- 3. Customer value
 -- ==========================================================
 
--- Customer lifetime value (CLV) by month
+-- Customer lifetime value (CLV)
 WITH customer_value AS (
     SELECT
         c.customer_unique_id,
@@ -208,7 +208,11 @@ ORDER BY cohort_month, order_month;
 -- 5. Customer segmentation
 -- ==========================================================
 
--- Customer segmentation based on RFM (Recency, Frequency, Monetary) analysis
+-- Customer segmentation based on RFM
+-- Recency = days since most recent purchase
+-- Frequency = number of orders
+-- Monetary = total customer spending
+
 WITH customer_rfm AS (
     SELECT
         c.customer_unique_id,
@@ -221,27 +225,39 @@ WITH customer_rfm AS (
     JOIN order_items oi
         ON o.order_id = oi.order_id
     GROUP BY c.customer_unique_id
+),
+
+dataset_reference AS (
+    SELECT MAX(order_purchase_timestamp) AS reference_date
+    FROM orders
 )
 
 SELECT
     customer_unique_id,
     last_order_date,
     order_count,
-    total_spent,
+    ROUND(total_spent::numeric, 2) AS total_spent,
+
     CASE
-        WHEN last_order_date = MAX(o.order_purchase_timestamp) - INTERVAL '30 days' THEN 'Active'
-        WHEN last_order_date >= MAX(o.order_purchase_timestamp) - INTERVAL '90 days' THEN 'At Risk'
+        WHEN reference_date - last_order_date <= INTERVAL '30 days'
+            THEN 'Active'
+        WHEN reference_date - last_order_date <= INTERVAL '90 days'
+            THEN 'At Risk'
         ELSE 'Churned'
     END AS recency_segment,
+
     CASE
         WHEN order_count = 1 THEN 'One-time'
         WHEN order_count BETWEEN 2 AND 5 THEN 'Occasional'
         ELSE 'Frequent'
     END AS frequency_segment,
+
     CASE
         WHEN total_spent < 100 THEN 'Low Value'
-        WHEN total_spent BETWEEN 100 AND 500 THEN 'Medium Value'
+        WHEN total_spent <= 500 THEN 'Medium Value'
         ELSE 'High Value'
     END AS monetary_segment
+
 FROM customer_rfm
+CROSS JOIN dataset_reference
 ORDER BY total_spent DESC;
